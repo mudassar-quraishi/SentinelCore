@@ -4,20 +4,26 @@ import api from "../services/api";
 import {
   FaBug,
   FaExclamationTriangle,
-  FaDatabase,
-  FaShieldVirus,
+  FaShieldAlt,
+  FaCheckCircle,
 } from "react-icons/fa";
 
 function DashboardCards() {
+
   const [stats, setStats] = useState({
-    threats: 0,
-    alerts: 0,
-    ioc: 0,
-    risk: "0%",
+    totalThreats: 0,
+    criticalThreats: 0,
+    openThreats: 0,
+    resolvedThreats: 0,
   });
 
   useEffect(() => {
     fetchStats();
+
+    // Auto refresh every 30 seconds
+    const interval = setInterval(fetchStats, 30000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const fetchStats = async () => {
@@ -31,51 +37,63 @@ function DashboardCards() {
 
   const cards = [
     {
-      title: "Threats",
-      value: stats.threats,
+      title: "Total Threats",
+      value: stats.totalThreats,
       icon: <FaBug />,
-      color: "text-red-500",
+      color: "text-red-600",
+      bg: "bg-red-100",
     },
     {
-      title: "Active Alerts",
-      value: stats.alerts,
+      title: "Critical Threats",
+      value: stats.criticalThreats,
       icon: <FaExclamationTriangle />,
-      color: "text-yellow-500",
+      color: "text-orange-600",
+      bg: "bg-orange-100",
     },
     {
-      title: "IOC Count",
-      value: stats.ioc,
-      icon: <FaDatabase />,
-      color: "text-blue-500",
+      title: "Open Threats",
+      value: stats.openThreats,
+      icon: <FaShieldAlt />,
+      color: "text-blue-600",
+      bg: "bg-blue-100",
     },
     {
-      title: "Risk Score",
-      value: stats.risk,
-      icon: <FaShieldVirus />,
-      color: "text-green-500",
+      title: "Resolved Threats",
+      value: stats.resolvedThreats,
+      icon: <FaCheckCircle />,
+      color: "text-green-600",
+      bg: "bg-green-100",
     },
   ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
+
       {cards.map((card, index) => (
+
         <div
           key={index}
-          className="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl hover:-translate-y-1 transition duration-300"
+          className="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
         >
-          <div className={`text-4xl ${card.color}`}>
+
+          <div
+            className={`w-14 h-14 rounded-full flex items-center justify-center text-3xl ${card.bg} ${card.color}`}
+          >
             {card.icon}
           </div>
 
-          <h3 className="mt-4 text-gray-500 text-lg">
+          <h3 className="mt-5 text-gray-500 font-semibold">
             {card.title}
           </h3>
 
           <h1 className="text-4xl font-bold mt-2">
             {card.value}
           </h1>
+
         </div>
+
       ))}
+
     </div>
   );
 }

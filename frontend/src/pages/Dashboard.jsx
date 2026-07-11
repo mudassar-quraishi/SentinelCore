@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import DashboardCards from "../components/DashboardCards";
 import ThreatChart from "../components/ThreatChart";
 import RecentAlerts from "../components/RecentAlerts";
+import RecentThreats from "../components/RecentThreats";
 
 function Dashboard() {
   return (
@@ -23,6 +24,8 @@ function Dashboard() {
         <DashboardCards />
 
         <ThreatChart />
+
+        <RecentThreats />
 
         <RecentAlerts />
 

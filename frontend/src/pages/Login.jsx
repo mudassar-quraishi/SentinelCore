@@ -7,13 +7,17 @@ function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
     const navigate = useNavigate();
 
     const handleLogin = async () => {
 
-        if (email === "" || password === "") {
+        if (!email || !password) {
+
             alert("Please enter email and password");
+
             return;
+
         }
 
         try {
@@ -23,26 +27,34 @@ function Login() {
                 password,
             });
 
-          if (response.data === "Login Successful") {
-               localStorage.setItem("isLoggedIn", "true");
+            // Save JWT Token
+            localStorage.setItem("token", response.data.token);
 
-                navigate("/dashboard");
+            // Login Status
+            localStorage.setItem("isLoggedIn", "true");
 
-                  } else {
+            alert("Login Successful");
 
-                alert(response.data);
+            navigate("/dashboard");
 
-          }
+        }catch (error) {
 
-        } catch (error) {
+    console.log(error);
 
-            alert("Login Failed");
-            console.log(error);
+    if (error.response) {
+        console.log("Status:", error.response.status);
+        console.log("Data:", error.response.data);
+        alert(JSON.stringify(error.response.data));
+    } else {
+        alert(error.message);
+    }
 
-        }
+}
+
     };
 
     return (
+
         <div className="login-container">
 
             <div className="login-card">
@@ -72,7 +84,9 @@ function Login() {
             </div>
 
         </div>
+
     );
+
 }
 
 export default Login;

@@ -8,6 +8,7 @@ import {
   FaFileAlt,
   FaCog,
   FaSignOutAlt,
+  FaList,
 } from "react-icons/fa";
 
 function Sidebar() {
@@ -29,7 +30,14 @@ function Sidebar() {
 
           {/* Dashboard */}
           <li
-            onClick={() => navigate("/dashboard")}
+            onClick={() => {
+
+                localStorage.removeItem("token");
+                localStorage.removeItem("isLoggedIn");
+
+                navigate("/");
+
+            }}
             className="flex items-center gap-3 px-6 py-3 hover:bg-slate-800 cursor-pointer transition"
           >
             <FaHome />
@@ -54,20 +62,30 @@ function Sidebar() {
             Add Threat
           </li>
 
+          {/* Add IOC */}
+          <li
+            onClick={() => navigate("/add-ioc")}
+            className="flex items-center gap-3 px-6 py-3 hover:bg-slate-800 cursor-pointer transition"
+          >
+            <FaSearch />
+            Add IOC
+          </li>
+
+          {/* IOC List */}
+          <li
+            onClick={() => navigate("/ioc-list")}
+            className="flex items-center gap-3 px-6 py-3 hover:bg-slate-800 cursor-pointer transition"
+          >
+            <FaList />
+            IOC List
+          </li>
+
           {/* Alerts */}
           <li
             className="flex items-center gap-3 px-6 py-3 hover:bg-slate-800 cursor-pointer transition"
           >
             <FaExclamationTriangle />
             Alerts
-          </li>
-
-          {/* IOC Management */}
-          <li
-            className="flex items-center gap-3 px-6 py-3 hover:bg-slate-800 cursor-pointer transition"
-          >
-            <FaSearch />
-            IOC Management
           </li>
 
           {/* Reports */}

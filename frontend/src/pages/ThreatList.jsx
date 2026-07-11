@@ -9,6 +9,8 @@ function ThreatList() {
     const navigate = useNavigate();
 
     const [threats, setThreats] = useState([]);
+    const [search, setSearch] = useState("");
+    const [severityFilter, setSeverityFilter] = useState("All");
 
     useEffect(() => {
         fetchThreats();
@@ -29,9 +31,7 @@ function ThreatList() {
             "Are you sure you want to delete this threat?"
         );
 
-        if (!confirmDelete) {
-            return;
-        }
+        if (!confirmDelete) return;
 
         try {
 
@@ -50,6 +50,61 @@ function ThreatList() {
         }
     };
 
+    // Severity Badge Colors
+    const getSeverityBadge = (severity) => {
+
+        switch (severity) {
+
+            case "Critical":
+                return "bg-red-600 text-white";
+
+            case "High":
+                return "bg-orange-500 text-white";
+
+            case "Medium":
+                return "bg-yellow-400 text-black";
+
+            case "Low":
+                return "bg-green-500 text-white";
+
+            default:
+                return "bg-gray-500 text-white";
+        }
+    };
+
+    // Status Badge Colors
+    const getStatusBadge = (status) => {
+
+        switch (status) {
+
+            case "Open":
+                return "bg-red-100 text-red-700";
+
+            case "In Progress":
+                return "bg-blue-100 text-blue-700";
+
+            case "Resolved":
+                return "bg-green-100 text-green-700";
+
+            default:
+                return "bg-gray-100 text-gray-700";
+        }
+    };
+
+    // Search + Filter
+    const filteredThreats = threats.filter((threat) => {
+
+        const matchesSearch =
+            threat.title.toLowerCase().includes(search.toLowerCase());
+
+        const matchesSeverity =
+            severityFilter === "All" ||
+            threat.severity === severityFilter;
+
+        return matchesSearch && matchesSeverity;
+
+    });
+
     return (
         <>
             <Navbar />
@@ -58,42 +113,80 @@ function ThreatList() {
             <main className="ml-64 mt-16 p-8 bg-slate-100 min-h-screen">
 
                 <h1 className="text-3xl font-bold mb-6">
-                    Threat List
+                    Threat Management
                 </h1>
+
+                {/* Search + Filter */}
+                <div className="flex flex-col md:flex-row gap-4 mb-6">
+
+                    <input
+                        type="text"
+                        placeholder="🔍 Search Threat..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full md:w-80 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    <select
+                        value={severityFilter}
+                        onChange={(e) => setSeverityFilter(e.target.value)}
+                        className="border rounded-lg px-4 py-2"
+                    >
+                        <option value="All">All Severity</option>
+                        <option value="Critical">Critical</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+
+                </div>
 
                 <div className="bg-white rounded-xl shadow-lg overflow-hidden">
 
                     <table className="w-full">
 
-                        <thead className="bg-slate-800 text-white">
+                        <thead className="bg-slate-900 text-white">
+
                             <tr>
+
                                 <th className="p-4">ID</th>
                                 <th className="p-4">Title</th>
                                 <th className="p-4">Severity</th>
                                 <th className="p-4">Source</th>
                                 <th className="p-4">Status</th>
-                                <th className="p-4">Action</th>
+                                <th className="p-4">Actions</th>
+
                             </tr>
+
                         </thead>
 
                         <tbody>
 
-                            {threats.length > 0 ? (
+                            {filteredThreats.length > 0 ? (
 
-                                threats.map((threat) => (
+                                filteredThreats.map((threat) => (
 
                                     <tr
                                         key={threat.id}
-                                        className="border-b hover:bg-gray-100 text-center"
+                                        className="border-b hover:bg-gray-50 text-center"
                                     >
+
                                         <td className="p-4">{threat.id}</td>
 
-                                        <td className="p-4">
+                                        <td className="p-4 font-medium">
                                             {threat.title}
                                         </td>
 
                                         <td className="p-4">
-                                            {threat.severity}
+
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-sm font-semibold ${getSeverityBadge(
+                                                    threat.severity
+                                                )}`}
+                                            >
+                                                {threat.severity}
+                                            </span>
+
                                         </td>
 
                                         <td className="p-4">
@@ -101,20 +194,32 @@ function ThreatList() {
                                         </td>
 
                                         <td className="p-4">
-                                            {threat.status}
+
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusBadge(
+                                                    threat.status
+                                                )}`}
+                                            >
+                                                {threat.status}
+                                            </span>
+
                                         </td>
 
                                         <td className="p-4">
 
                                             <button
-                                                onClick={() => navigate(`/edit-threat/${threat.id}`)}
+                                                onClick={() =>
+                                                    navigate(`/edit-threat/${threat.id}`)
+                                                }
                                                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                                             >
                                                 Edit
                                             </button>
 
                                             <button
-                                                onClick={() => deleteThreat(threat.id)}
+                                                onClick={() =>
+                                                    deleteThreat(threat.id)
+                                                }
                                                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
                                             >
                                                 Delete
