@@ -1,5 +1,5 @@
 package backend.controller;
-
+import backend.dto.RegisterRequest;
 import backend.dto.JwtResponse;
 import backend.dto.LoginRequest;
 import backend.service.AuthService;
@@ -24,5 +24,13 @@ public class AuthController {
                 request.getEmail(),
                 request.getPassword()
         );
+
+    }
+
+    @PostMapping("/register")
+    public String register(@RequestBody RegisterRequest request) {
+
+        return authService.register(request);
+
     }
 }

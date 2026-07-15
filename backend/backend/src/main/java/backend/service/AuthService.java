@@ -1,7 +1,10 @@
 package backend.service;
 
 import backend.dto.JwtResponse;
+import backend.dto.RegisterRequest;
+import backend.entity.Role;
 import backend.entity.User;
+import backend.repository.RoleRepository;
 import backend.repository.UserRepository;
 import backend.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +18,17 @@ public class AuthService {
     private UserRepository userRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtUtil jwtUtil;
 
+    // ===========================
+    // LOGIN
+    // ===========================
     public JwtResponse login(String email, String password) {
 
         User user = userRepository.findByEmail(email)
@@ -42,5 +51,32 @@ public class AuthService {
                 role,
                 "Login Successful"
         );
+    }
+
+    // ===========================
+    // REGISTER
+    // ===========================
+    public String register(RegisterRequest request) {
+
+        // Check if email already exists
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already registered");
+        }
+
+        // Assign default role
+        Role role = roleRepository.findByName("ANALYST")
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        User user = new User();
+
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(role);
+        user.setEnabled(true);
+
+        userRepository.save(user);
+
+        return "Registration Successful";
     }
 }

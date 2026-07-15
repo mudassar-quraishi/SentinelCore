@@ -1,16 +1,22 @@
-import { useNavigate } from "react-router-dom";
-import api from "../services/api";
 import { useState } from "react";
-import "../styles/Login.css";
+import { useNavigate } from "react-router-dom";
+
+import api from "../services/api";
+
+import AuthLayout from "../components/auth/AuthLayout";
+import LoginForm from "../components/auth/LoginForm";
 
 function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+
+        e.preventDefault();
 
         if (!email || !password) {
 
@@ -21,12 +27,15 @@ function Login() {
 
         try {
 
+            setLoading(true);
+
             const response = await api.post("/auth/login", {
+
                 email,
                 password,
+
             });
 
-            // Login Failed
             if (!response.data.token) {
 
                 alert(response.data.message);
@@ -34,28 +43,26 @@ function Login() {
 
             }
 
-            // Save User Details
             localStorage.setItem("token", response.data.token);
             localStorage.setItem("email", response.data.email);
             localStorage.setItem("role", response.data.role);
             localStorage.setItem("isLoggedIn", "true");
 
-            alert(response.data.message);
-
             navigate("/dashboard");
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.log(error);
 
             if (error.response) {
 
-                console.log("Status:", error.response.status);
-                console.log("Data:", error.response.data);
-
                 alert(error.response.data.message || "Login Failed");
 
-            } else {
+            }
+
+            else {
 
                 alert(error.message);
 
@@ -63,39 +70,33 @@ function Login() {
 
         }
 
+        finally {
+
+            setLoading(false);
+
+        }
+
     };
 
     return (
 
-        <div className="login-container">
+        <AuthLayout>
 
-            <div className="login-card">
+            <LoginForm
 
-                <h1>SentinelCore</h1>
+                email={email}
+                password={password}
 
-                <h3>Cyber Threat Intelligence</h3>
+                setEmail={setEmail}
+                setPassword={setPassword}
 
-                <input
-                    type="email"
-                    placeholder="Email Address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+                handleLogin={handleLogin}
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                loading={loading}
 
-                <button onClick={handleLogin}>
-                    Login
-                </button>
+            />
 
-            </div>
-
-        </div>
+        </AuthLayout>
 
     );
 

@@ -1,3 +1,4 @@
+import Register from "../pages/Register";
 import UserList from "../pages/UserList";
 import AddUser from "../pages/AddUser";
 import EditUser from "../pages/EditUser";
@@ -21,6 +22,7 @@ function AppRoutes() {
       <Routes>
         {/* Public Route */}
         <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Protected Routes */}
         <Route
