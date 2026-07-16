@@ -1,156 +1,49 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Login from "../pages/Login";
 import Register from "../pages/Register";
+import Dashboard from "../pages/Dashboard";
+import ThreatList from "../pages/ThreatList";
+import AddThreat from "../pages/AddThreat";
+import EditThreat from "../pages/EditThreat";
+import IOCList from "../pages/IOCList";
+import AddIOC from "../pages/AddIOC";
+import EditIOC from "../pages/EditIOC";
+import AlertList from "../pages/AlertList";
+import AddAlert from "../pages/AddAlert";
+import EditAlert from "../pages/EditAlert";
 import UserList from "../pages/UserList";
 import AddUser from "../pages/AddUser";
 import EditUser from "../pages/EditUser";
-import AddAlert from "../pages/AddAlert";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AlertList from "../pages/AlertList";
-import Login from "../pages/Login";
-import Dashboard from "../pages/Dashboard";
-import AddThreat from "../pages/AddThreat";
-import ThreatList from "../pages/ThreatList";
-import EditThreat from "../pages/EditThreat";
-import AddIOC from "../pages/AddIOC";
-import IOCList from "../pages/IOCList";
-import EditIOC from "../pages/EditIOC";
-import EditAlert from "../pages/EditAlert";
-import ProtectedRoute from "./ProtectedRoute";
 import Reports from "../pages/Reports";
+import ProtectedRoute from "./ProtectedRoute";
+
+const writeRoles = ["ADMIN", "ANALYST"];
+const adminRoles = ["ADMIN"];
+
+const protect = (element, allowedRoles) => (
+  <ProtectedRoute allowedRoles={allowedRoles}>{element}</ProtectedRoute>
+);
 
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Route */}
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
-        {/* Protected Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/threat-list"
-          element={
-            <ProtectedRoute>
-              <ThreatList />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/add-threat"
-          element={
-            <ProtectedRoute>
-              <AddThreat />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/edit-threat/:id"
-          element={
-            <ProtectedRoute>
-              <EditThreat />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/add-ioc"
-          element={
-            <ProtectedRoute>
-              <AddIOC />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/ioc-list"
-          element={
-            <ProtectedRoute>
-              <IOCList />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/edit-ioc/:id"
-          element={
-            <ProtectedRoute>
-              <EditIOC />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/add-alert"
-          element={
-            <ProtectedRoute>
-              <AddAlert />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/alert-list"
-          element={
-            <ProtectedRoute>
-              <AlertList />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/edit-alert/:id"
-          element={
-            <ProtectedRoute>
-              <EditAlert />
-            </ProtectedRoute>
-          }
-        />
-
-            <Route
-          path="/users"
-          element={
-              <ProtectedRoute>
-                  <UserList />
-              </ProtectedRoute>
-          }
-      />
-
-      <Route
-          path="/add-user"
-          element={
-              <ProtectedRoute>
-                  <AddUser />
-              </ProtectedRoute>
-          }
-      />
-
-      <Route
-          path="/edit-user/:id"
-          element={
-              <ProtectedRoute>
-                  <EditUser />
-              </ProtectedRoute>
-          }
-      />
-
-      <Route
-    path="/reports"
-    element={
-        <ProtectedRoute>
-            <Reports />
-        </ProtectedRoute>
-    }
-/>
+        <Route path="/dashboard" element={protect(<Dashboard />)} />
+        <Route path="/threat-list" element={protect(<ThreatList />)} />
+        <Route path="/add-threat" element={protect(<AddThreat />, writeRoles)} />
+        <Route path="/edit-threat/:id" element={protect(<EditThreat />, writeRoles)} />
+        <Route path="/ioc-list" element={protect(<IOCList />)} />
+        <Route path="/add-ioc" element={protect(<AddIOC />, writeRoles)} />
+        <Route path="/edit-ioc/:id" element={protect(<EditIOC />, writeRoles)} />
+        <Route path="/alert-list" element={protect(<AlertList />)} />
+        <Route path="/add-alert" element={protect(<AddAlert />, writeRoles)} />
+        <Route path="/edit-alert/:id" element={protect(<EditAlert />, writeRoles)} />
+        <Route path="/users" element={protect(<UserList />, adminRoles)} />
+        <Route path="/add-user" element={protect(<AddUser />, adminRoles)} />
+        <Route path="/edit-user/:id" element={protect(<EditUser />, adminRoles)} />
+        <Route path="/reports" element={protect(<Reports />)} />
       </Routes>
     </BrowserRouter>
   );

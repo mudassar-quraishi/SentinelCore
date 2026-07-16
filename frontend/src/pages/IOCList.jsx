@@ -11,10 +11,14 @@ import AnimatedBackground from "../components/AnimatedBackground";
 import GlassCard from "../components/ui/GlassCard";
 import PageHeader from "../components/ui/PageHeader";
 import TableContainer from "../components/ui/TableContainer";
+import { getCurrentRole } from "../services/auth";
 
 function IOCList() {
 
     const navigate = useNavigate();
+    const role = getCurrentRole();
+    const canEdit = ["ADMIN", "ANALYST"].includes(role);
+    const isAdmin = role === "ADMIN";
 
     const [iocs, setIOCs] = useState([]);
     const [search, setSearch] = useState("");
@@ -204,7 +208,7 @@ function IOCList() {
                             <th className="p-4">Risk</th>
                             <th className="p-4">Source</th>
                             <th className="p-4">Status</th>
-                            <th className="p-4">Action</th>
+                            {canEdit && <th className="p-4">Action</th>}
 
                         </tr>
 
@@ -286,7 +290,7 @@ function IOCList() {
 
                                     </td>
 
-                                    <td className="p-4">
+                                    {canEdit && <td className="p-4">
 
                                         <button
                                             onClick={() =>
@@ -308,7 +312,7 @@ function IOCList() {
                                             Edit
                                         </button>
 
-                                        <button
+                                        {isAdmin && <button
                                             onClick={() => deleteIOC(ioc.id)}
                                             className="
                                                 px-4
@@ -323,9 +327,9 @@ function IOCList() {
                                             "
                                         >
                                             Delete
-                                        </button>
+                                        </button>}
 
-                                    </td>
+                                    </td>}
 
                                 </motion.tr>
 
@@ -336,7 +340,7 @@ function IOCList() {
                             <tr>
 
                                 <td
-                                    colSpan="7"
+                                    colSpan={canEdit ? 7 : 6}
                                     className="py-12 text-center text-slate-500"
                                 >
                                     No IOC Found

@@ -25,8 +25,11 @@ import Sidebar from "../components/Sidebar";
 import AnimatedBackground from "../components/AnimatedBackground";
 import PageHeader from "../components/ui/PageHeader";
 import GlassCard from "../components/ui/GlassCard";
+import { getCurrentRole } from "../services/auth";
 
 function Reports() {
+
+  const role = getCurrentRole();
 
   const [threats, setThreats] = useState([]);
   const [alerts, setAlerts] = useState([]);
@@ -37,7 +40,7 @@ function Reports() {
     fetchThreats();
     fetchAlerts();
     fetchIOCs();
-    fetchUsers();
+    if (role === "ADMIN") fetchUsers();
   }, []);
 
   const fetchThreats = async () => {
@@ -186,7 +189,7 @@ function Reports() {
 
               </div>
 
-              <div className="bg-slate-800 rounded-2xl p-6 border border-violet-500/20">
+              {role === "ADMIN" && <div className="bg-slate-800 rounded-2xl p-6 border border-violet-500/20">
 
                 <h3 className="text-slate-400">
                   Users
@@ -196,7 +199,7 @@ function Reports() {
                   {users.length}
                 </p>
 
-              </div>
+              </div>}
 
             </div>
 

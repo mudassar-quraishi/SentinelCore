@@ -12,12 +12,13 @@ import GlassCard from "../components/ui/GlassCard";
 import PageHeader from "../components/ui/PageHeader";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import TableContainer from "../components/ui/TableContainer";
+import { getCurrentRole } from "../services/auth";
 
 function ThreatList() {
 
     const navigate = useNavigate();
 
-    const role = localStorage.getItem("role");
+    const role = getCurrentRole();
 
     const [threats, setThreats] = useState([]);
 
@@ -240,7 +241,7 @@ function ThreatList() {
         subtitle="Monitor, search and manage cyber threats"
       >
 
-        {role === "ADMIN" && (
+        {["ADMIN", "ANALYST"].includes(role) && (
 
           <div className="flex gap-4">
 
@@ -339,7 +340,7 @@ function ThreatList() {
               <th className="p-4">Source</th>
               <th className="p-4">Status</th>
 
-              {role === "ADMIN" && (
+              {["ADMIN", "ANALYST"].includes(role) && (
 
                 <th className="p-4">
                   Actions
@@ -422,7 +423,7 @@ function ThreatList() {
 
                   </td>
 
-                  {role === "ADMIN" && (
+                  {["ADMIN", "ANALYST"].includes(role) && (
 
                     <td className="p-4">
 
@@ -448,24 +449,24 @@ function ThreatList() {
                         Edit
                       </button>
 
-                      <button
-                        onClick={() =>
-                          deleteThreat(threat.id)
-                        }
-                        className="
-                          px-4
-                          py-2
-                          rounded-xl
-                          bg-gradient-to-r
-                          from-red-600
-                          to-red-500
-                          text-white
-                          hover:scale-105
-                          transition
-                        "
-                      >
-                        Delete
-                      </button>
+                      {role === "ADMIN" && (
+                        <button
+                          onClick={() => deleteThreat(threat.id)}
+                          className="
+                            px-4
+                            py-2
+                            rounded-xl
+                            bg-gradient-to-r
+                            from-red-600
+                            to-red-500
+                            text-white
+                            hover:scale-105
+                            transition
+                          "
+                        >
+                          Delete
+                        </button>
+                      )}
 
                     </td>
 
@@ -480,7 +481,7 @@ function ThreatList() {
               <tr>
 
                 <td
-                  colSpan={role === "ADMIN" ? 6 : 5}
+                  colSpan={["ADMIN", "ANALYST"].includes(role) ? 6 : 5}
                   className="text-center py-12 text-slate-500"
                 >
 

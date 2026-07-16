@@ -1,19 +1,20 @@
 import { FaBell, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { getCurrentRole } from "../services/auth";
 
 function Navbar() {
 
     const navigate = useNavigate();
 
-    const email = localStorage.getItem("email");
-    const role = localStorage.getItem("role");
+    const email = sessionStorage.getItem("email");
+    const role = getCurrentRole();
 
     const logout = () => {
 
-        localStorage.removeItem("token");
-        localStorage.removeItem("email");
-        localStorage.removeItem("role");
-        localStorage.removeItem("isLoggedIn");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("email");
+        sessionStorage.removeItem("role");
+        sessionStorage.removeItem("isLoggedIn");
 
         navigate("/");
 
@@ -47,7 +48,9 @@ function Navbar() {
                             className={`text-xs px-2 py-1 rounded-full font-bold ${
                                 role === "ADMIN"
                                     ? "bg-red-600 text-white"
-                                    : "bg-blue-600 text-white"
+                                    : role === "ANALYST"
+                                        ? "bg-cyan-600 text-white"
+                                        : "bg-blue-600 text-white"
                             }`}
                         >
                             {role}

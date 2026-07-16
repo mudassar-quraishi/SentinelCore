@@ -20,10 +20,14 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User Not Found"));
 
+        String role = "USER".equalsIgnoreCase(user.getRole().getName())
+                ? "VIEWER"
+                : user.getRole().getName();
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
-                .roles(user.getRole().getName())
+                .roles(role)
                 .build();
     }
 }

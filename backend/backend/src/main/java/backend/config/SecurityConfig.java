@@ -55,11 +55,11 @@ public class SecurityConfig {
 
                         // Dashboard
                         .requestMatchers("/api/dashboard/**")
-                        .hasAnyRole("ADMIN", "ANALYST")
+                        .hasAnyRole("ADMIN", "ANALYST", "VIEWER")
 
                         // Threat APIs
                         .requestMatchers(HttpMethod.GET, "/api/threats/**")
-                        .hasAnyRole("ADMIN", "ANALYST")
+                        .hasAnyRole("ADMIN", "ANALYST", "VIEWER")
 
                         .requestMatchers(HttpMethod.POST, "/api/threats/**")
                         .hasAnyRole("ADMIN", "ANALYST")
@@ -71,16 +71,34 @@ public class SecurityConfig {
                         .hasRole("ADMIN")
 
                         // IOC APIs
-                        .requestMatchers("/api/iocs/**")
+                        .requestMatchers(HttpMethod.GET, "/api/ioc/**")
+                        .hasAnyRole("ADMIN", "ANALYST", "VIEWER")
+
+                        .requestMatchers(HttpMethod.POST, "/api/ioc/**")
                         .hasAnyRole("ADMIN", "ANALYST")
 
-                        // Alert APIs
-                        .requestMatchers("/api/alerts/**")
+                        .requestMatchers(HttpMethod.PUT, "/api/ioc/**")
                         .hasAnyRole("ADMIN", "ANALYST")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/ioc/**")
+                        .hasRole("ADMIN")
+
+                        // Alert APIs
+                        .requestMatchers(HttpMethod.GET, "/api/alerts/**")
+                        .hasAnyRole("ADMIN", "ANALYST", "VIEWER")
+
+                        .requestMatchers(HttpMethod.POST, "/api/alerts/**")
+                        .hasAnyRole("ADMIN", "ANALYST")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/alerts/**")
+                        .hasAnyRole("ADMIN", "ANALYST")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/alerts/**")
+                        .hasRole("ADMIN")
 
                         // Report APIs
                         .requestMatchers("/api/reports/**")
-                        .hasAnyRole("ADMIN", "ANALYST")
+                        .hasAnyRole("ADMIN", "ANALYST", "VIEWER")
 
                         // Allow Preflight
                         .requestMatchers(HttpMethod.OPTIONS, "/**")

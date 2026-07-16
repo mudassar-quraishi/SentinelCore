@@ -14,13 +14,14 @@ import {
 
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { getCurrentRole } from "../services/auth";
 
 function Sidebar() {
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const role = localStorage.getItem("role");
+  const role = getCurrentRole();
 
   const menu = [
     {
@@ -32,6 +33,7 @@ function Sidebar() {
       title: "Add Threat",
       icon: <FaPlusCircle />,
       path: "/add-threat",
+      roles: ["ADMIN", "ANALYST"],
     },
     {
       title: "Threat List",
@@ -43,6 +45,7 @@ function Sidebar() {
       title: "Add IOC",
       icon: <FaSearch />,
       path: "/add-ioc",
+      roles: ["ADMIN", "ANALYST"],
     },
     {
       title: "IOC List",
@@ -53,6 +56,7 @@ function Sidebar() {
       title: "Add Alert",
       icon: <FaBell />,
       path: "/add-alert",
+      roles: ["ADMIN", "ANALYST"],
     },
     {
       title: "Alert List",
@@ -63,6 +67,7 @@ function Sidebar() {
       title: "Users",
       icon: <FaUsers />,
       path: "/users",
+      roles: ["ADMIN"],
     },
     {
       title: "Reports",
@@ -103,7 +108,7 @@ function Sidebar() {
         </h1>
 
         <p className="text-slate-400 text-sm mt-2">
-          Cyber Threat Intelligence
+          Role-based security operations
         </p>
 
       </div>
@@ -112,7 +117,7 @@ function Sidebar() {
 
       <div className="flex-1 mt-5 px-3 pb-6">
 
-        {menu.map((item) => {
+        {menu.filter((item) => !item.roles || item.roles.includes(role)).map((item) => {
 
           const active = location.pathname === item.path;
 
@@ -172,7 +177,7 @@ function Sidebar() {
         </div>
 
         <p className="text-slate-500 text-xs mt-3">
-          Role : {role}
+          Signed in as: {role}
         </p>
 
       </div>
